@@ -1,0 +1,45 @@
+p: Project = input;
+out: output set of string;
+
+# https://boa.cs.iastate.edu/boa/?q=boa/job/107852 (2022 python)
+
+checkImports := function(n: Namespace, p: Project) : string {
+	has_import := false;
+	foreach (i: int; def(n.imports[i])) {
+	    searchString := "hypothesis";
+		parts := split(n.imports[i], " as ");
+		# if we have renames only look at the original package names 
+		if (len(parts) > 1) {
+			# if we find hypothesis in the imports (not as a renamed pkg) add it to the list
+			if (strfind(searchString, parts[0]) != -1) {
+				has_import = true;
+				return format("project name: %s namespace: %s url: %s", string(p.name), string(n.name), string(p.project_url));
+			}
+			
+		} else {
+			if (strfind(searchString, n.imports[i]) != -1) {
+				has_import = true;
+				return format("project name: %s namespace: %s url: %s", string(p.name), string(n.name), string(p.project_url));
+			}
+		}
+	}
+	return "";
+
+};
+
+visit(p, visitor {
+    before repo: CodeRepository -> {
+        # Visit only newest snapshot.
+		snapshot := getsnapshot(repo);
+		foreach (i: int; def(snapshot[i])) {
+			visit(snapshot[i]);
+		}
+		stop;
+
+    }
+
+	before n: Namespace -> {
+		out << checkImports(n, p);	
+	}
+
+});
