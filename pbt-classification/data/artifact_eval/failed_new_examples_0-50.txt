@@ -1,0 +1,37 @@
+[
+    [
+        "schemathesis",
+        "schemathesis",
+        "src/schemathesis/targets.py",
+        "failed setup 0",
+        "failed to get file contents: 404 {\"message\": \"Not Found\", \"documentation_url\": \"https://docs.github.com/rest/repos/contents#get-repository-content\", \"status\": \"404\"}"
+    ],
+    [
+        "mwhittaker",
+        "serial",
+        "schedule.py",
+        "failed setup 21",
+        "failed to get function information: ('problem in Scalpel: ', SyntaxError('Lambda expression parameters cannot be parenthesized', ('<unknown>', 62, 65, '    return st.tuples(read_or_write_type(), object()).map(lambda (t, o): Action(t, i, o))\\n', 62, 71)))"
+    ],
+    [
+        "heartpunk",
+        "interview_cake",
+        "python/queue-two-stacks.py",
+        "failed setup 34",
+        "failed to get function information: ('problem in Scalpel: ', SyntaxError(\"Missing parentheses in call to 'print'. Did you mean print(...)?\", ('<unknown>', 36, 17, '                print our_pop, python_pop\\n', 36, 42)))"
+    ],
+    [
+        "heartpunk",
+        "interview_cake",
+        "python/find-rotation-point.py",
+        "failed setup 38",
+        "failed to get function information: ('problem in Scalpel: ', SyntaxError(\"Missing parentheses in call to 'print'. Did you mean print(...)?\", ('<unknown>', 49, 1, 'print find_rotation_point(words)\\n', 49, 33)))"
+    ],
+    [
+        "kxepal",
+        "hypothesis-couchdb",
+        "hypothesis_couchdb/json.py",
+        "failed setup 40",
+        "failed to get file contents: 404 {\"message\": \"Not Found\", \"documentation_url\": \"https://docs.github.com/rest/repos/repos#get-a-repository\", \"status\": \"404\"}"
+    ]
+]

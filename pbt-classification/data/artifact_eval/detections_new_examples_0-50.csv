@@ -1,0 +1,35 @@
+user,project_name,namespace,function,assert_stmt,roundtrip,partial_roundtrip,hetero_gv_roundtrip,commutative,partial_commutative,const_eq,const_inclusion,inclusion,typecheck,const_bounds,gen_val_bounds,cross_gv_bounds,exception,const_neq,gen_val_neq
+curvefi,crypto_lp_pricing,fuzz_qbrt.py,test_qbrt,"assert abs(qbrt_int - qbrt_ideal) < 5e-15 * max(qbrt_ideal, 1)",False,False,False,False,False,False,False,False,False,False,True,False,False,False,False
+wware,python-hacks,hypothesis/hanoi.py,test_tower_of_hanoi,"assert things != [[], [], full]",False,False,False,False,False,False,False,False,False,False,False,False,False,True,False
+sraaphorst,daily-coding-problem,dcp_py/day019/day019.py,test_my_func,assert brute_force_tree(lists) == dynamic_approach(lists),False,False,False,True,False,False,False,False,False,False,False,False,False,False,False
+reiddraper,array-binary-encoding,compare.py,test_compare,assert control == candidate,False,False,False,False,True,False,False,False,False,False,False,False,False,False,False
+mausch,compare_quickchecks,python-hypothesis.py,test_ints,assert x < 100,False,False,False,False,False,False,False,False,False,True,False,False,False,False,False
+ekepes,DemoCode,hypothesis/commutative.py,test_ints_are_commutative,assert x + y == y + x,False,False,False,True,False,False,False,False,False,False,False,False,False,False,False
+ekepes,DemoCode,hypothesis/commutative.py,test_ints_cancel,assert x + y - y == x,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+ekepes,DemoCode,hypothesis/commutative.py,test_reversing_twice_gives_same_list,assert xs == ys,True,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+ekepes,DemoCode,hypothesis/commutative.py,test_look_tuples_work_too,assert len(t) == 2,False,False,False,False,False,True,False,False,False,False,False,False,False,False,False
+ekepes,DemoCode,hypothesis/commutative.py,test_look_tuples_work_too,"assert isinstance(t[0], bool)",False,False,False,False,False,False,False,False,True,False,False,False,False,False,False
+ekepes,DemoCode,hypothesis/commutative.py,test_look_tuples_work_too,"assert isinstance(t[1], str)",False,False,False,False,False,False,False,False,True,False,False,False,False,False,False
+vrthra,algorithms.py,sorts/mergesort.py,test_sort,assert mergesort(x) == sorted(x),False,False,False,True,False,False,False,False,False,False,False,False,False,False,False
+vrthra,algorithms.py,sorts/shellsort.py,test_sort,assert shellsort(x) == sorted(x),False,False,False,True,False,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_init,assert key in trie,False,False,False,False,False,False,False,True,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_init,assert missing_key not in trie,False,False,False,False,False,False,False,True,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_key_id,assert trie.restore_key(key_id) == key,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_getitem,assert trie.restore_key(key_id) == key,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_get,assert trie.restore_key(key_id) == key,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_get,assert trie.restore_key(key_id) == key,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_get,assert trie.restore_key(key_id) == key,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_get,assert trie.get('non_existing_key') is None,False,False,False,False,False,True,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_get,assert trie.get(b'non_existing_bytes_key') is None,False,False,False,False,False,True,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_get,"assert trie.get('non_existing_key', 'default value') == 'default value'",False,False,False,False,False,True,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_get,"assert trie.get(b'non_existing_bytes_key', 'default value') == 'default value'",False,False,False,False,False,True,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_saveload,assert key in trie2,False,False,False,False,False,False,False,True,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_mmap,assert key in trie2,False,False,False,False,False,False,False,True,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_tobytes_frombytes,assert key in trie2,False,False,False,False,False,False,False,True,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_tobytes_frombytes,assert trie2.key_id(key) == trie.key_id(key),False,False,False,False,True,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_dumps_loads,assert key in trie2,False,False,False,False,False,False,False,True,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_dumps_loads,assert trie2.key_id(key) == trie.key_id(key),False,False,False,False,True,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_iterkeys,assert trie.keys() == list(trie.iterkeys()),False,False,False,False,True,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_iterkeys,assert trie.keys(prefix) == list(trie.iterkeys(prefix)),False,False,False,False,True,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_iteritems,assert trie.items() == list(trie.iteritems()),False,False,False,False,True,False,False,False,False,False,False,False,False,False,False
+somenzz,geekbang,algorthms/aaa_trie.py,test_iteritems,assert trie.items(prefix) == list(trie.iteritems(prefix)),False,False,False,False,True,False,False,False,False,False,False,False,False,False,False

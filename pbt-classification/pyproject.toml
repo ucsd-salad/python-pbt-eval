@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "hypothesis_analysis"
+version = "0.1.0"
+description = ""
+authors = ["Anonymized"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+black = "^24.4.2"
+python-scalpel = "^1.0b0"
+PyGithub = "^2.2.0"
+pytest = "^8.1.1"
+python-dotenv = "^1.0.1"
+pandas = "^2.2.2"
+requests = "^2.32.3"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 120
+
+[tool.pytest.ini_options]
+markers = [
+    "func_index",
+]

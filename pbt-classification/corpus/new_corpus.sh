@@ -1,0 +1,3 @@
+#export GH_TOKEN=...
+gh search code "import hypothesis" --language=python --match file -L 1000 --json path,repository,url,textMatches > github_output.txt
+poetry run python hypothesis_analysis/analyze_new_corpus.py
