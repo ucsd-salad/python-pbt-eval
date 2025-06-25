@@ -1,3 +1,6 @@
 [submodule "mutation-testing/mutmut"]
 	path = mutation-testing/mutmut
 	url = https://github.com/saviravi/mutmut.git
+[submodule "mutation-testing/hypothesis"]
+	path = mutation-testing/hypothesis
+	url = https://github.com/saviravi/hypothesis.git
