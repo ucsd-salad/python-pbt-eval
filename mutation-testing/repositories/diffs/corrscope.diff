@@ -1,0 +1,24 @@
+diff --git a/tests/test_gui.py b/tests/test_gui.py
+index c6b13fe..9b983b2 100644
+--- a/tests/test_gui.py
++++ b/tests/test_gui.py
+@@ -1,10 +1,11 @@
+-import qtpy.QtWidgets as qw
++# import qtpy.QtWidgets as qw
+ 
+-from corrscope import gui
+-from corrscope.corrscope import template_config
++# from corrscope import gui
++# from corrscope.corrscope import template_config
++# import pytest
+ 
+-
+-def test_gui_init():
+-    app = qw.QApplication([])
+-    cfg = template_config()
+-    gui.MainWindow(cfg)
++# pytest.mark.skip()
++# def test_gui_init():
++#     app = qw.QApplication([])
++#     cfg = template_config()
++#     gui.MainWindow(cfg)

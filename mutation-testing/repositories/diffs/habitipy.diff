@@ -1,0 +1,22 @@
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index e027223..d5ec040 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -56,7 +56,7 @@ def index_id_alias(draw, length):
+     return r
+ 
+ @composite
+-def test_data(draw):
++def create_test_data(draw):
+     can_overlap = draw(booleans())
+     all_tasks = draw(task_lists)
+     if all_tasks:
+@@ -231,7 +231,7 @@ class TestCli(unittest.TestCase):
+             self.assertTrue(cli.prettify.called)
+ 
+     @settings(suppress_health_check=[HealthCheck.too_slow])
+-    @given(test_data())
++    @given(create_test_data())
+     def test_tasks_change(self, arg):
+         can_overlap, user_tasks, _more_tasks, all_tasks, arguments_strings, task_ids, args = arg
+         op = mock.Mock()

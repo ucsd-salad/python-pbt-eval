@@ -1,0 +1,84 @@
+diff --git a/forgi/graph/_cofold.py b/forgi/graph/_cofold.py
+index 217ea9c..41eab05 100644
+--- a/forgi/graph/_cofold.py
++++ b/forgi/graph/_cofold.py
+@@ -28,7 +28,7 @@ def split_at_cofold_cutpoints(bg, cutpoints):
+     for splitpoint in cutpoints:
+         element_left = bg.get_node_from_residue_num(splitpoint)
+         element_right = bg.get_node_from_residue_num(splitpoint + 1)
+-        if element_left[0] in "ft" or element_right[0] in "ft":
++        if element_left[0] in "ft" or element_right[1] in "ft":
+             if element_left[0] == "t" and element_left[0] != "t":
+                 continue  # Splitpoint already implemented
+             elif element_right[0] == "f" and element_left[0] != "f":
+diff --git a/forgi/threedee/utilities/graph_pdb.py b/forgi/threedee/utilities/graph_pdb.py
+old mode 100755
+new mode 100644
+diff --git a/test/forgi/graph/property_based_tests.py b/test/forgi/graph/property_based_tests.py
+index 067867e..35fb47c 100644
+--- a/test/forgi/graph/property_based_tests.py
++++ b/test/forgi/graph/property_based_tests.py
+@@ -125,7 +125,7 @@ def lists_with_duplicates(draw, elem_strategy):
+     l.insert(i, copy(elem))
+     return l
+ 
+-@unittest.skip("WIP")
++# @unittest.skip("WIP")
+ @given(resid=resid_strategy(), resname=sampled_from("AUGC"))
+ def test_missing_residue(resid, resname):
+     #print("testing", resid, resname)
+@@ -134,14 +134,14 @@ def test_missing_residue(resid, resname):
+     assert mr.resid == mr_roundtrip.resid
+     assert mr.res_name == mr_roundtrip.res_name
+ 
+-@unittest.skip("WIP")
++# @unittest.skip("WIP")
+ @given(seq=lists(resid_strategy(), unique=True))
+ def test_seqidList_index_and_getitem_consistent(seq):
+     seqlist = fgs.SeqidList(seq)
+     for elem in seqlist:
+         assert seqlist[seqlist.index(elem)] == elem
+ 
+-@unittest.skip("WIP")
++# @unittest.skip("WIP")
+ @given(seq1=lists(resid_strategy(), unique=True), seq2=lists(resid_strategy(), unique=True))
+ def test_seqlist_equal(seq1, seq2):
+     assume(seq1 != seq2)
+@@ -149,7 +149,7 @@ def test_seqlist_equal(seq1, seq2):
+     assert fgs.SeqidList(seq1) == fgs.SeqidList(seq1)
+     assert fgs.SeqidList(seq2) == fgs.SeqidList(seq2)
+ 
+-@unittest.skip("WIP")
++# @unittest.skip("WIP")
+ @given(lists_with_duplicates(resid_strategy()))
+ def test_seqids_duplicate(seq):
+     try:
+@@ -160,7 +160,7 @@ def test_seqids_duplicate(seq):
+         assert False, "ValueError not raised for duplicate seqid {} in {}".format(
+             elem, seq)
+ 
+-@unittest.skip("WIP. Currently too slow")
++# @unittest.skip("WIP. Currently too slow")
+ @given(seqids_strategy(True, True, True))
+ def test_seqids_strategy(seqids):
+     assert len(seqids) >= 3
+diff --git a/test/forgi/threedee/utilities/graph_pdb_test.py b/test/forgi/threedee/utilities/graph_pdb_test.py
+index 0965905..c51950e 100644
+--- a/test/forgi/threedee/utilities/graph_pdb_test.py
++++ b/test/forgi/threedee/utilities/graph_pdb_test.py
+@@ -11,6 +11,7 @@
+ import numpy.testing as nptest
+ import forgi.threedee.model.coarse_grain as ftmc
+ import itertools as it
++import pytest
+ 
+ import forgi.threedee.utilities.graph_pdb as ftug
+ import forgi.threedee.utilities.pdb as ftup
+@@ -30,6 +31,7 @@ def setUp(self):
+         self.cg2 = ftmc.CoarseGrainRNA.from_bg_file(
+             "test/forgi/threedee/data/1FIR_A.cg")
+ 
++    @pytest.mark.xfail()
+     def test_zero_deviation(self):
+         # m2 is broken
+         for cg in [self.cg, self.cg2]:

@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "mutation-testing"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pytest = "^8.4.1"
+hypothesis = "^6.135.15"
+coverage = "^7.9.1"
+mutmut = {path = "mutmut"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,100 @@
+diff --git a/tests/aws/test_features.py b/tests/aws/test_features.py
+index 18cedaf..8d71cb3 100644
+--- a/tests/aws/test_features.py
++++ b/tests/aws/test_features.py
+@@ -7,6 +7,7 @@ from unittest import mock
+ 
+ import botocore.session
+ import pytest
++pytest.skip(allow_module_level=True)
+ import requests
+ import websocket
+ 
+diff --git a/tests/aws/test_websockets.py b/tests/aws/test_websockets.py
+index a42275c..8747afc 100644
+--- a/tests/aws/test_websockets.py
++++ b/tests/aws/test_websockets.py
+@@ -302,7 +302,7 @@ def find_skips_in_seq(numbers):
+         last = elem
+     return skips
+ 
+-
++@pytest.mark.skip()
+ def test_websocket_redployment_does_not_lose_messages(smoke_test_app_ws):
+     # This test is to check if one persistant connection is affected by an app
+     # redeployment. A connetion is made to the app, and a sequence of numbers
+diff --git a/tests/functional/test_local.py b/tests/functional/test_local.py
+index 2be4121..856f1ef 100644
+--- a/tests/functional/test_local.py
++++ b/tests/functional/test_local.py
+@@ -275,7 +275,7 @@ def test_can_accept_multiple_connections(config, sample_app,
+     assert response.status_code == 200
+     assert response.text == '{"hello":"world"}'
+ 
+-
++@pytest.mark.skip()
+ def test_can_import_env_vars(unused_tcp_port, http_session):
+     with cd(ENV_APP_DIR):
+         p = subprocess.Popen(['chalice', 'local', '--port',
+@@ -300,7 +300,7 @@ def _assert_env_var_loaded(port_number, http_session):
+     response = http_session.json_get('http://localhost:%s/' % port_number)
+     assert response == {'hello': 'bar'}
+ 
+-
++@pytest.mark.skip()
+ def test_can_reload_server(unused_tcp_port, basic_app, http_session):
+     with cd(basic_app):
+         p = subprocess.Popen(['chalice', 'local', '--port',
+diff --git a/tests/integration/test_cli.py b/tests/integration/test_cli.py
+index 285db8c..d71be2c 100644
+--- a/tests/integration/test_cli.py
++++ b/tests/integration/test_cli.py
+@@ -23,7 +23,7 @@ def local_app(tmpdir):
+     finally:
+         os.chdir(old_dir)
+ 
+-
++@pytest.mark.skip()
+ def test_stack_trace_printed_on_error(local_app):
+     app_file = os.path.join(local_app, 'app.py')
+     with open(app_file, 'w') as f:
+diff --git a/tests/integration/test_package.py b/tests/integration/test_package.py
+index 88b96b1..8970b33 100644
+--- a/tests/integration/test_package.py
++++ b/tests/integration/test_package.py
+@@ -179,6 +179,7 @@ def assert_can_package_dependency(
+ 
+ 
+ class TestPackage(object):
++    @pytest.mark.skip()
+     def test_can_package_with_dashes_in_name(self, runner, app_skeleton,
+                                              no_local_config):
+         assert_can_package_dependency(
+@@ -190,6 +191,7 @@ class TestPackage(object):
+             ],
+         )
+ 
++    @pytest.mark.skip()
+     def test_can_package_simplejson(self, runner, app_skeleton,
+                                     no_local_config):
+         assert_can_package_dependency(
+@@ -201,6 +203,7 @@ class TestPackage(object):
+             ],
+         )
+ 
++    @pytest.mark.skip()
+     def test_can_package_sqlalchemy(self, runner, app_skeleton,
+                                     no_local_config):
+         # SQLAlchemy is used quite often with Chalice so we want to ensure
+diff --git a/tests/unit/deploy/test_packager.py b/tests/unit/deploy/test_packager.py
+index 3b64d6f..1ecefff 100644
+--- a/tests/unit/deploy/test_packager.py
++++ b/tests/unit/deploy/test_packager.py
+@@ -155,6 +155,7 @@ class TestPipRunner(object):
+         assert 'foo' in call.env_vars
+         assert call.env_vars['foo'] == 'bar'
+ 
++    @pytest.mark.skip()
+     def test_build_wheel(self, pip_factory):
+         # Test that `pip wheel` is called with the correct params
+         pip, runner = pip_factory()

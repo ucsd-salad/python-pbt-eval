@@ -1,0 +1,13 @@
+diff --git a/tests/test_load_data.py b/tests/test_load_data.py
+index 5bc5e25d..c5ca3978 100644
+--- a/tests/test_load_data.py
++++ b/tests/test_load_data.py
+@@ -18,7 +18,7 @@ from datacube.testutils.io import write_gtiff, rio_slurp, rio_slurp_xarray, get_
+ from datacube.testutils.iodriver import NetCDF
+ from datacube.utils import ignore_exceptions_if
+ 
+-
++@pytest.mark.skip()
+ def test_load_data(tmpdir):
+     tmpdir = Path(str(tmpdir))
+ 

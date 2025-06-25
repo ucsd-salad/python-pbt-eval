@@ -1,0 +1,158 @@
+diff --git a/src/aiosmtplib/__init__.py b/src/aiosmtplib/__init__.py
+index f883ec8..e59be77 100644
+--- a/src/aiosmtplib/__init__.py
++++ b/src/aiosmtplib/__init__.py
+@@ -30,7 +30,7 @@ from .errors import (
+ )
+ from .response import SMTPResponse
+ from .smtp import SMTP
+-from .typing import SMTPStatus
++from .a_typing import SMTPStatus
+ 
+ 
+ __title__ = "aiosmtplib"
+diff --git a/src/aiosmtplib/api.py b/src/aiosmtplib/api.py
+index d15fa64..e812c40 100644
+--- a/src/aiosmtplib/api.py
++++ b/src/aiosmtplib/api.py
+@@ -9,7 +9,7 @@ from typing import Dict, Optional, Sequence, Tuple, Union, cast
+ 
+ from .response import SMTPResponse
+ from .smtp import DEFAULT_TIMEOUT, SMTP
+-from .typing import SocketPathType
++from .a_typing import SocketPathType
+ 
+ 
+ __all__ = ("send",)
+diff --git a/src/aiosmtplib/protocol.py b/src/aiosmtplib/protocol.py
+index 62bf170..f7ac645 100644
+--- a/src/aiosmtplib/protocol.py
++++ b/src/aiosmtplib/protocol.py
+@@ -16,7 +16,7 @@ from .errors import (
+     SMTPTimeoutError,
+ )
+ from .response import SMTPResponse
+-from .typing import SMTPStatus
++from .a_typing import SMTPStatus
+ 
+ 
+ __all__ = ("SMTPProtocol",)
+diff --git a/src/aiosmtplib/smtp.py b/src/aiosmtplib/smtp.py
+index 1b583ac..a6ee755 100644
+--- a/src/aiosmtplib/smtp.py
++++ b/src/aiosmtplib/smtp.py
+@@ -36,7 +36,7 @@ from .errors import (
+ from .esmtp import parse_esmtp_extensions
+ from .protocol import SMTPProtocol
+ from .response import SMTPResponse
+-from .typing import Default, SMTPStatus, SocketPathType, _default
++from .a_typing import Default, SMTPStatus, SocketPathType, _default
+ 
+ 
+ __all__ = ("SMTP", "SMTP_PORT", "SMTP_TLS_PORT", "SMTP_STARTTLS_PORT")
+diff --git a/src/aiosmtplib/status.py b/src/aiosmtplib/status.py
+index dd317d5..cfc3e88 100644
+--- a/src/aiosmtplib/status.py
++++ b/src/aiosmtplib/status.py
+@@ -1,4 +1,4 @@
+-from .typing import SMTPStatus
++from .a_typing import SMTPStatus
+ 
+ 
+ # alias SMTPStatus for backwards compatibility
+diff --git a/src/aiosmtplib/typing.py b/src/aiosmtplib/typing.py
+deleted file mode 100644
+index c080d91..0000000
+--- a/src/aiosmtplib/typing.py
++++ /dev/null
+@@ -1,64 +0,0 @@
+-import enum
+-import os
+-import sys
+-from typing import Union
+-
+-
+-__all__ = ("Default", "SMTPStatus", "SocketPathType", "_default")
+-
+-# 3.9 changed the os.PathLike type
+-if sys.version_info >= (3, 9):
+-    SocketPathType = Union[str, bytes, os.PathLike[str]]
+-else:
+-    SocketPathType = Union[str, bytes, os.PathLike]
+-
+-
+-class Default(enum.Enum):
+-    """
+-    Used for type hinting kwarg defaults.
+-    """
+-
+-    token = 0
+-
+-
+-_default = Default.token
+-
+-
+-@enum.unique
+-class SMTPStatus(enum.IntEnum):
+-    """
+-    Defines SMTP statuses for code readability.
+-
+-    See also: http://www.greenend.org.uk/rjk/tech/smtpreplies.html
+-    """
+-
+-    invalid_response = -1
+-    system_status_ok = 211
+-    help_message = 214
+-    ready = 220
+-    closing = 221
+-    auth_successful = 235
+-    completed = 250
+-    will_forward = 251
+-    cannot_vrfy = 252
+-    auth_continue = 334
+-    start_input = 354
+-    domain_unavailable = 421
+-    mailbox_unavailable = 450
+-    error_processing = 451
+-    insufficient_storage = 452
+-    tls_not_available = 454
+-    unrecognized_command = 500
+-    unrecognized_parameters = 501
+-    command_not_implemented = 502
+-    bad_command_sequence = 503
+-    parameter_not_implemented = 504
+-    domain_does_not_accept_mail = 521
+-    access_denied = 530  # Sendmail specific
+-    auth_failed = 535
+-    mailbox_does_not_exist = 550
+-    user_not_local = 551
+-    storage_exceeded = 552
+-    mailbox_name_invalid = 553
+-    transaction_failed = 554
+-    syntax_error = 555
+diff --git a/tests/test_auth_methods.py b/tests/test_auth_methods.py
+index 04c5e9f..a23ad69 100644
+--- a/tests/test_auth_methods.py
++++ b/tests/test_auth_methods.py
+@@ -11,7 +11,7 @@ from aiosmtplib import SMTP
+ from aiosmtplib.auth import auth_crammd5_verify, auth_login_encode, auth_plain_encode
+ from aiosmtplib.errors import SMTPAuthenticationError, SMTPException
+ from aiosmtplib.response import SMTPResponse
+-from aiosmtplib.typing import SMTPStatus
++from aiosmtplib.a_typing import SMTPStatus
+ 
+ from .auth import DummySMTPAuth
+ 
+diff --git a/tests/test_status.py b/tests/test_status.py
+index e762a91..cd89d01 100644
+--- a/tests/test_status.py
++++ b/tests/test_status.py
+@@ -3,7 +3,7 @@ Test status import shim.
+ """
+ 
+ from aiosmtplib.status import SMTPStatus as OldImportSMTPStatus
+-from aiosmtplib.typing import SMTPStatus
++from aiosmtplib.a_typing import SMTPStatus
+ 
+ 
+ def test_status_import() -> None:

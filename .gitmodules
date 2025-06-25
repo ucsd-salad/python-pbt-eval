@@ -1,0 +1,3 @@
+[submodule "mutation-testing/mutmut"]
+	path = mutation-testing/mutmut
+	url = https://github.com/saviravi/mutmut.git

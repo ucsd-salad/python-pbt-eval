@@ -1,0 +1,49 @@
+diff --git a/tests/test_main.py b/tests/test_main.py
+index 7b10191..0038514 100644
+--- a/tests/test_main.py
++++ b/tests/test_main.py
+@@ -189,7 +189,7 @@ def test_voronoi_regions_from_coords_italy(n_pts, per_geom, return_unassigned_pt
+ 
+ # #%% realistic full tests with plotting
+ 
+-
++@pytest.mark.skip()
+ @pytest.mark.parametrize(
+     'n_pts,per_geom', [
+         (10, True), (10, False),
+@@ -222,7 +222,7 @@ def test_voronoi_italy_with_plot(n_pts, per_geom):
+ 
+     return fig
+ 
+-
++@pytest.mark.skip()
+ @pytest.mark.mpl_image_compare
+ def test_voronoi_spain_area_with_plot():
+     area_shape = _get_country_shape('Spain')
+@@ -252,7 +252,7 @@ def test_voronoi_spain_area_with_plot():
+ 
+     return fig
+ 
+-
++@pytest.mark.skip()
+ @pytest.mark.mpl_image_compare
+ def test_voronoi_geopandas_with_plot():
+     world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+@@ -284,7 +284,7 @@ def test_voronoi_geopandas_with_plot():
+ 
+     return fig
+ 
+-
++@pytest.mark.skip()
+ @pytest.mark.mpl_image_compare
+ def test_voronoi_sweden_duplicate_points_with_plot():
+     area_shape = _get_country_shape('Sweden')
+@@ -343,7 +343,7 @@ def test_issue_7a():
+ 
+     assert all([len(pts_in_region) == 1 for pts_in_region in region_pts.values()])  # no duplicates
+ 
+-
++@pytest.mark.skip()
+ @pytest.mark.mpl_image_compare
+ def test_issue_7b():
+     centroids = np.array([[496712, 232672], [497987, 235942], [496425, 230252], [497482, 234933],

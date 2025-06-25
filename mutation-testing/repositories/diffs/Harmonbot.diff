@@ -1,0 +1,995 @@
+diff --git a/Discord/bot.py b/Discord/bot.py
+index 4d6033c9..fdfec008 100644
+--- a/Discord/bot.py
++++ b/Discord/bot.py
+@@ -950,104 +950,166 @@ class Bot(commands.Bot):
+ 
+     async def on_command_error(self, ctx, error):
+         # Ignore
+-        match error:
+-            # Not owner
+-            case commands.NotOwner():
+-                return
+-            # Command disabled or not found
+-            case commands.CommandNotFound() | commands.DisabledCommand():
+-                return
++        if isinstance(error, commands.NotOwner):
++            return
++        elif isinstance(error, commands.CommandNotFound) or isinstance(error, commands.DisabledCommand):
++            return
++        # match error:
++        #     # Not owner
++        #     case commands.NotOwner():
++        #         return
++        #     # Command disabled or not found
++        #     case commands.CommandNotFound() | commands.DisabledCommand():
++        #         return
+         # Check Failure
+         if isinstance(error, commands.CheckAnyFailure):
+             # Use last error in case where all checks in any failed
+             error = error.errors[0]
+-        match error:
+-            # Guild only
+-            case commands.NoPrivateMessage():
+-                await ctx.embed_reply("Please use that command in a server")
+-                return
++        if isinstance(error, commands.NoPrivateMessage):
++            await ctx.embed_reply("Please use that command in a server")
++            return
++        elif isinstance(error, commands.NotGuildOwner) or isinstance(error, commands.MissingPermissions):
++            # Also for commands.NotOwner?
++            await ctx.embed_reply(
++                f"{self.error_emoji} You don't have permission to do that"
++            )
++            return
++        elif isinstance(error, commands.BotMissingPermissions):
++            missing_permissions = self.inflect_engine.join(
++                [f"`{permission}`" for permission in error.missing_permissions]
++            )
++            await ctx.embed_reply(
++                "I don't have permission to do that here\n"
++                f"I need the {missing_permissions} {self.inflect_engine.plural('permission', len(error.missing_permissions))}"
++            )
++            return
++        elif isinstance(error, errors.NotPermitted):
++            await ctx.embed_reply(
++                f"{self.error_emoji} You don't have permission to use that command here"
++            )
++            return
++        # Not in voice channel + user permitted
++        elif isinstance(error, errors.PermittedVoiceNotConnected):
++            await ctx.embed_reply(
++                "I'm not in a voice channel\n"
++                f"Please use `{ctx.prefix}join` first"
++            )
++            return
++        # Not in voice channel + user not permitted
++        elif isinstance(error, errors.NotPermittedVoiceNotConnected):
++            await ctx.embed_reply(
++                "I'm not in a voice channel\n"
++                f"Please ask someone with permission to use `{ctx.prefix}join` first"
++            )
++            return
++        # match error:
++            # # Guild only
++            # case commands.NoPrivateMessage():
++            #     await ctx.embed_reply("Please use that command in a server")
++            #     return
+             # User missing permissions
+-            case errors.NotGuildOwner() | commands.MissingPermissions():
+-                # Also for commands.NotOwner?
+-                await ctx.embed_reply(
+-                    f"{self.error_emoji} You don't have permission to do that"
+-                )
+-                return
++            # case errors.NotGuildOwner() | commands.MissingPermissions():
++            #     # Also for commands.NotOwner?
++            #     await ctx.embed_reply(
++            #         f"{self.error_emoji} You don't have permission to do that"
++            #     )
++            #     return
+             # Bot missing permissions
+-            case commands.BotMissingPermissions():
+-                missing_permissions = self.inflect_engine.join(
+-                    [f"`{permission}`" for permission in error.missing_permissions]
+-                )
+-                await ctx.embed_reply(
+-                    "I don't have permission to do that here\n"
+-                    f"I need the {missing_permissions} {self.inflect_engine.plural('permission', len(error.missing_permissions))}"
+-                )
+-                return
++            # case commands.BotMissingPermissions():
++            #     missing_permissions = self.inflect_engine.join(
++            #         [f"`{permission}`" for permission in error.missing_permissions]
++            #     )
++            #     await ctx.embed_reply(
++            #         "I don't have permission to do that here\n"
++            #         f"I need the {missing_permissions} {self.inflect_engine.plural('permission', len(error.missing_permissions))}"
++            #     )
++            #     return
+             # User not permitted to use command
+-            case errors.NotPermitted():
+-                await ctx.embed_reply(
+-                    f"{self.error_emoji} You don't have permission to use that command here"
+-                )
+-                return
+-            # Not in voice channel + user permitted
+-            case errors.PermittedVoiceNotConnected():
+-                await ctx.embed_reply(
+-                    "I'm not in a voice channel\n"
+-                    f"Please use `{ctx.prefix}join` first"
+-                )
+-                return
+-            # Not in voice channel + user not permitted
+-            case errors.NotPermittedVoiceNotConnected():
+-                await ctx.embed_reply(
+-                    "I'm not in a voice channel\n"
+-                    f"Please ask someone with permission to use `{ctx.prefix}join` first"
+-                )
+-                return
++            # case errors.NotPermitted():
++            #     await ctx.embed_reply(
++            #         f"{self.error_emoji} You don't have permission to use that command here"
++            #     )
++            #     return
++            # # Not in voice channel + user permitted
++            # case errors.PermittedVoiceNotConnected():
++            #     await ctx.embed_reply(
++            #         "I'm not in a voice channel\n"
++            #         f"Please use `{ctx.prefix}join` first"
++            #     )
++            #     return
++            # # Not in voice channel + user not permitted
++            # case errors.NotPermittedVoiceNotConnected():
++            #     await ctx.embed_reply(
++            #         "I'm not in a voice channel\n"
++            #         f"Please ask someone with permission to use `{ctx.prefix}join` first"
++            #     )
++            #     return
+         # User Input Error
+-        match error:
+-            # Missing required input
+-            case commands.MissingRequiredArgument():
++        # Missing required input
++        if isinstance(error, commands.MissingRequiredArgument):
++            await ctx.embed_reply(
++                str(error).rstrip('.').replace("argument", "input")
++            )
++            return
++        # Input parsing error
++        elif isinstance(error, commands.ArgumentParsingError):
++            await ctx.embed_reply(
++                f"{self.error_emoji} Error parsing input: " +
++                str(error).replace("'", '`')
++            )
++            return
++        # Invalid input
++        elif isinstance(error, commands.BadArgument) or isinstance(error, commands.BadLiteralArgument) or isinstance(error, commands.BadUnionArgument):
++            await ctx.embed_reply(
++                f"{self.error_emoji} Error: Invalid Input: {error}"
++            )
++            return
++        # match error:
++        #     # Missing required input
++        #     case commands.MissingRequiredArgument():
++        #         await ctx.embed_reply(
++        #             str(error).rstrip('.').replace("argument", "input")
++        #         )
++        #         return
++        #     # Input parsing error
++        #     case commands.ArgumentParsingError():
++        #         await ctx.embed_reply(
++        #             f"{self.error_emoji} Error parsing input: " +
++        #             str(error).replace("'", '`')
++        #         )
++        #         return
++        #     # Invalid input
++        #     case (
++        #         commands.BadArgument() | commands.BadLiteralArgument() |
++        #         commands.BadUnionArgument()
++        #     ):
++        #         await ctx.embed_reply(
++        #             f"{self.error_emoji} Error: Invalid Input: {error}"
++        #         )
++        #         return
++        # Command Invoke Error
++        if isinstance(error, commands.CommandInvokeError):
++            if error.original.code == 50034 and isinstance(error.original, discord.HTTPException):
++            # match error.original:
++            #     # Unable to bulk delete messages older than 14 days
++            #     case discord.HTTPException() if error.original.code == 50034:
+                 await ctx.embed_reply(
+-                    str(error).rstrip('.').replace("argument", "input")
++                    f"{self.error_emoji} Error: You can only bulk delete messages that are under 14 days old"
+                 )
+                 return
+-            # Input parsing error
+-            case commands.ArgumentParsingError():
+-                await ctx.embed_reply(
+-                    f"{self.error_emoji} Error parsing input: " +
+-                    str(error).replace("'", '`')
++            elif isinstance(error.original, discord.Forbidden):
++                # Bot missing permissions (Unhandled)
++                # case discord.Forbidden():
++                self.print(
++                    f"Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}"
+                 )
+                 return
+-            # Invalid input
+-            case (
+-                commands.BadArgument() | commands.BadLiteralArgument() |
+-                commands.BadUnionArgument()
+-            ):
+-                await ctx.embed_reply(
+-                    f"{self.error_emoji} Error: Invalid Input: {error}"
++            # Discord Server Error
++            elif isinstance(error.original, discord.DiscordServerError):
++                self.print(
++                    f"Discord Server Error for {ctx.command.qualified_name}: {error.original}"
+                 )
+                 return
+-        # Command Invoke Error
+-        if isinstance(error, commands.CommandInvokeError):
+-            match error.original:
+-                # Unable to bulk delete messages older than 14 days
+-                case discord.HTTPException() if error.original.code == 50034:
+-                    await ctx.embed_reply(
+-                        f"{self.error_emoji} Error: You can only bulk delete messages that are under 14 days old"
+-                    )
+-                    return
+-                # Bot missing permissions (Unhandled)
+-                case discord.Forbidden():
+-                    self.print(
+-                        f"Missing Permissions for {ctx.command.qualified_name} in #{ctx.channel.name} in {ctx.guild.name}"
+-                    )
+-                    return
+-                # Discord Server Error
+-                case discord.DiscordServerError():
+-                    self.print(
+-                        f"Discord Server Error for {ctx.command.qualified_name}: {error.original}"
+-                    )
+-                    return
+         # Handled with cog error handler
+         if isinstance(error, commands.MaxConcurrencyReached):
+             return
+diff --git a/Discord/cogs/fish.py b/Discord/cogs/fish.py
+index 64a34ccf..4f162632 100644
+--- a/Discord/cogs/fish.py
++++ b/Discord/cogs/fish.py
+@@ -17,14 +17,13 @@ def card_value(card):
+     try:
+         return int(card.value)
+     except ValueError:
+-        match card.value:
+-            case "Ace":
++        if card.value == "Ace":
+                 return 1
+-            case "Jack":
++        elif card.value == "Jack":
+                 return 11
+-            case "Queen":
++        elif card.value == "Queen":
+                 return 12
+-            case "King":
++        elif card.value == "King":
+                 return 13
+ 
+ def cards_to_string(cards):
+diff --git a/Discord/cogs/maze.py b/Discord/cogs/maze.py
+index 0d6f4d30..3f5e3a98 100644
+--- a/Discord/cogs/maze.py
++++ b/Discord/cogs/maze.py
+@@ -167,17 +167,16 @@ class Maze:
+         row_offset = 2 * self.row + 1
+         column_offset = 4 * self.column + 2
+         self.visible[row_offset] = self.visible[row_offset][:column_offset] + ' ' + self.visible[row_offset][column_offset + 1:]
+-        match direction:
+-            case Direction.UP:
+-                self.row -= 1
+-            case Direction.RIGHT:
++        if direction == Direction.UP:
++            self.row -= 1
++        elif direction == Direction.RIGHT:
+                 self.column += 1
+-            case Direction.DOWN:
+-                self.row += 1
+-            case Direction.LEFT:
+-                self.column -= 1
+-            case _:
+-                assert_never(direction)
++        elif direction == Direction.DOWN:
++            self.row += 1
++        elif direction == Direction.LEFT:
++            self.column -= 1
++        else:
++            assert_never(direction)
+ 
+         # self.visited[self.row][self.column] = True
+         self.move_counter += 1
+diff --git a/Discord/cogs/pinboard.py b/Discord/cogs/pinboard.py
+index 1b2dc5de..76f498ad 100644
+--- a/Discord/cogs/pinboard.py
++++ b/Discord/cogs/pinboard.py
+@@ -84,34 +84,32 @@ class Pinboard(commands.Cog):
+ 			return
+ 		response = await ctx.embed_reply("Backfilling...")
+ 		pinboard_channel = self.bot.get_channel(pinboard_channel_id)
+-		async with (
+-			ctx.bot.database_connection_pool.acquire() as connection,
+-			connection.transaction()
++		async with ctx.bot.database_connection_pool.acquire() as connection:
++			async with connection.transaction():
+ 			# Postgres requires non-scrollable cursors to be created
+ 			# and used in a transaction.
+-		):
+-			async for record in connection.cursor(
+-				"SELECT * FROM pinboard.pins WHERE guild_id = $1 ORDER BY message_id",
+-				ctx.guild.id
+-			):
+-				try:
+-					await pinboard_channel.fetch_message(record["pinboard_message_id"])
+-				except (discord.NotFound, discord.HTTPException):
+-					pin_count = await self.bot.db.fetchval(
+-						"SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
+-						record["message_id"]
+-					)
+-					if pin_count < threshold:
+-						continue
+-					pinned_message_channel = self.bot.get_channel(record["channel_id"])
+-					if not private_channels_setting and pinned_message_channel.overwrites_for(ctx.guild.default_role).read_messages is False:
+-						continue
+-					pinned_message = await pinned_message_channel.fetch_message(record["message_id"])
+-					pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
+-					await self.bot.db.execute(
+-						"UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
+-						pinboard_message.id, record["message_id"]
+-					)
++				async for record in connection.cursor(
++					"SELECT * FROM pinboard.pins WHERE guild_id = $1 ORDER BY message_id",
++					ctx.guild.id
++				):
++					try:
++						await pinboard_channel.fetch_message(record["pinboard_message_id"])
++					except (discord.NotFound, discord.HTTPException):
++						pin_count = await self.bot.db.fetchval(
++							"SELECT COUNT(*) FROM pinboard.pinners WHERE message_id = $1",
++							record["message_id"]
++						)
++						if pin_count < threshold:
++							continue
++						pinned_message_channel = self.bot.get_channel(record["channel_id"])
++						if not private_channels_setting and pinned_message_channel.overwrites_for(ctx.guild.default_role).read_messages is False:
++							continue
++						pinned_message = await pinned_message_channel.fetch_message(record["message_id"])
++						pinboard_message = await self.send_pinboard_message(pinboard_channel, pinned_message, pin_count)
++						await self.bot.db.execute(
++							"UPDATE pinboard.pins SET pinboard_message_id = $1 WHERE message_id = $2",
++							pinboard_message.id, record["message_id"]
++						)
+ 		if ctx.channel.id == pinboard_channel_id:
+ 			await ctx.bot.attempt_delete_message(response)
+ 		else:
+diff --git a/Discord/cogs/points.py b/Discord/cogs/points.py
+index d1ed7999..64d186ba 100644
+--- a/Discord/cogs/points.py
++++ b/Discord/cogs/points.py
+@@ -88,19 +88,17 @@ class Points(commands.Cog):
+         await ctx.defer()
+ 
+         fields = []
+-        async with (
+-            ctx.bot.database_connection_pool.acquire() as connection,
+-            connection.transaction()
++        async with ctx.bot.database_connection_pool.acquire() as connection:
++            async with connection.transaction():
+             # Postgres requires non-scrollable cursors to be created
+             # and used in a transaction.
+-        ):
+-            async for record in connection.cursor(
+-                "SELECT * FROM users.points ORDER BY points DESC LIMIT $1",
+-                number
+-            ):
+-                if not (user := ctx.bot.get_user(record["user_id"])):
+-                    user = await ctx.bot.fetch_user(record["user_id"])
+-                fields.append((str(user), f"{record['points']:,}"))
++                async for record in connection.cursor(
++                    "SELECT * FROM users.points ORDER BY points DESC LIMIT $1",
++                    number
++                ):
++                    if not (user := ctx.bot.get_user(record["user_id"])):
++                        user = await ctx.bot.fetch_user(record["user_id"])
++                    fields.append((str(user), f"{record['points']:,}"))
+ 
+         await ctx.embed_reply(
+             title = f"Points (`\N{CURRENCY SIGN}`) Top {number}",
+diff --git a/Discord/cogs/respects.py b/Discord/cogs/respects.py
+index 9709ea1e..84e1575d 100644
+--- a/Discord/cogs/respects.py
++++ b/Discord/cogs/respects.py
+@@ -151,16 +151,14 @@ class Respects(commands.Cog):
+             "SELECT value FROM respects.stats WHERE stat = 'total'"
+         )
+         respects_paid = []
+-        async with (
+-            ctx.bot.database_connection_pool.acquire() as connection,
+-            connection.transaction()
++        async with ctx.bot.database_connection_pool.acquire() as connection:
++            async with connection.transaction():
+             # Postgres requires non-scrollable cursors to be created
+             # and used in a transaction.
+-        ):
+-            async for record in connection.cursor(
+-                "SELECT * FROM respects.users"
+-            ):
+-                respects_paid.append(record["respects"])
++                async for record in connection.cursor(
++                    "SELECT * FROM respects.users"
++                ):
++                    respects_paid.append(record["respects"])
+         # TODO: Optimize
+         # TODO: Fit curve
+         ## n, bins, _ = matplotlib.pyplot.hist(respects_paid, log = True,
+@@ -223,19 +221,17 @@ class Respects(commands.Cog):
+         if number > 10:
+             number = 10
+         fields = []
+-        async with (
+-            ctx.bot.database_connection_pool.acquire() as connection,
+-            connection.transaction()
++        async with ctx.bot.database_connection_pool.acquire() as connection:
++            async with connection.transaction():
+             # Postgres requires non-scrollable cursors to be created
+             # and used in a transaction.
+-        ):
+-            async for record in connection.cursor(
+-                "SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1",
+-                number
+-            ):
+-                user = ctx.bot.get_user(record["user_id"])
+-                if not user:
+-                    user = await ctx.bot.fetch_user(record["user_id"])
+-                fields.append((str(user), f"{record['respects']:,}"))
++                async for record in connection.cursor(
++                    "SELECT * FROM respects.users ORDER BY respects DESC LIMIT $1",
++                    number
++                ):
++                    user = ctx.bot.get_user(record["user_id"])
++                    if not user:
++                        user = await ctx.bot.fetch_user(record["user_id"])
++                    fields.append((str(user), f"{record['respects']:,}"))
+         await ctx.embed_reply(title = "Top Respects Paid", fields = fields)
+ 
+diff --git a/Discord/cogs/trivia.py b/Discord/cogs/trivia.py
+index 81f40751..794d7531 100644
+--- a/Discord/cogs/trivia.py
++++ b/Discord/cogs/trivia.py
+@@ -378,31 +378,29 @@ class Trivia(commands.Cog):
+         """  # noqa: RUF002 (ambiguous-unicode-character-docstring)
+         await ctx.defer()
+         fields = []
+-        async with (
+-            ctx.bot.database_connection_pool.acquire() as connection,
+-            connection.transaction()
++        async with ctx.bot.database_connection_pool.acquire() as connection:
++            async with connection.transaction():
+             # Postgres requires non-scrollable cursors to be created
+             # and used in a transaction.
+-        ):
+-            async for record in connection.cursor(
+-                """
+-                SELECT * FROM trivia.users
+-                ORDER BY correct DESC LIMIT $1
+-                """,
+-                number
+-            ):
+-                # SELECT user_id, correct, incorrect?
+-                user = ctx.bot.get_user(record["user_id"])
+-                if not user:
+-                    user = await ctx.bot.fetch_user(record["user_id"])
+-                total = record["correct"] + record["incorrect"]
+-                correct_percentage = record["correct"] / total * 100
+-                fields.append((
+-                    str(user),
+-                    f"{record['correct']:,} correct "
+-                    f"({correct_percentage:.2f}%)\n"
+-                    f"{total:,} answered"
+-                ))
++                async for record in connection.cursor(
++                    """
++                    SELECT * FROM trivia.users
++                    ORDER BY correct DESC LIMIT $1
++                    """,
++                    number
++                ):
++                    # SELECT user_id, correct, incorrect?
++                    user = ctx.bot.get_user(record["user_id"])
++                    if not user:
++                        user = await ctx.bot.fetch_user(record["user_id"])
++                    total = record["correct"] + record["incorrect"]
++                    correct_percentage = record["correct"] / total * 100
++                    fields.append((
++                        str(user),
++                        f"{record['correct']:,} correct "
++                        f"({correct_percentage:.2f}%)\n"
++                        f"{total:,} answered"
++                    ))
+         await ctx.embed_reply(title = f"Trivia Top {number}", fields = fields)
+ 
+     @commands.command(hidden = True)
+diff --git a/Discord/cogs/twitter.py b/Discord/cogs/twitter.py
+index 083b687b..1898774e 100644
+--- a/Discord/cogs/twitter.py
++++ b/Discord/cogs/twitter.py
+@@ -208,24 +208,24 @@ class Twitter(commands.Cog):
+             async with self.bot.aiohttp_session.get(
+                 f"{nitter_instance_url}/{handle}/rss"
+             ) as resp:
+-                match resp.status:
+-                    case 400:
+-                        await ctx.embed_reply(
+-                            f"{ctx.bot.error_emoji} User not found:\n"
+-                            f"> `{handle}` doesn't appear to be a valid "
+-                            f"Twitter user at https://twitter.com/{handle}\n"
+-                            "> If the user existed before, they may have been "
+-                            "suspended or banned."
+-                        )
+-                        return
+-                    case 404:
+-                        await ctx.embed_reply(
+-                            f"{ctx.bot.error_emoji} User not found:\n"
+-                            f"> The page at https://twitter.com/{handle} is "
+-                            "either invalid, private, requires login, or "
+-                            "doesn't exist"
+-                        )
+-                        return
++                # match resp.status:
++                if resp.status == 400:
++                    await ctx.embed_reply(
++                        f"{ctx.bot.error_emoji} User not found:\n"
++                        f"> `{handle}` doesn't appear to be a valid "
++                        f"Twitter user at https://twitter.com/{handle}\n"
++                        "> If the user existed before, they may have been "
++                        "suspended or banned."
++                    )
++                    return
++                elif resp.status ==  404:
++                    await ctx.embed_reply(
++                        f"{ctx.bot.error_emoji} User not found:\n"
++                        f"> The page at https://twitter.com/{handle} is "
++                        "either invalid, private, requires login, or "
++                        "doesn't exist"
++                    )
++                    return
+ 
+                 feed_text = await resp.text()
+ 
+@@ -430,71 +430,69 @@ class Twitter(commands.Cog):
+                 async with self.bot.aiohttp_session.get(
+                     f"{nitter_instance_url}/{handle}/rss"
+                 ) as resp:
+-                    match resp.status:
+-                        case 200:
+-                            feed_text = await resp.text()
+-                        case 404 if (
+-                            await nitter.confirm_status_code(handle, 404)
+-                        ):
+-                            async with self.bot.aiohttp_session.get(
+-                                f"{nitter_instance_url}/{self.bot.twitter_test_handle}/rss"
+-                            ) as resp:
+-                                if resp.status == 200:
+-                                    deleted = await self.bot.db.fetch(
+-                                        """
+-                                        DELETE FROM twitter.handles
+-                                        WHERE handle = $1
+-                                        RETURNING *
+-                                        """,
+-                                        handle
++                # match resp.status:
++                    if resp.status == 200:
++                        feed_text = await resp.text()
++                    elif await nitter.confirm_status_code(handle, 404) and resp.status == 404:
++                        async with self.bot.aiohttp_session.get(
++                            f"{nitter_instance_url}/{self.bot.twitter_test_handle}/rss"
++                        ) as resp:
++                            if resp.status == 200:
++                                deleted = await self.bot.db.fetch(
++                                    """
++                                    DELETE FROM twitter.handles
++                                    WHERE handle = $1
++                                    RETURNING *
++                                    """,
++                                    handle
++                                )
++                                for record in deleted:
++                                    notice = (
++                                        f"`{record['handle']}` doesn't "
++                                        "appear to be a valid Twitter "
++                                        "user at "
++                                        f"https://twitter.com/{record['handle']} "
++                                        "anymore, so "
++                                        f"<#{record['channel_id']}> is no "
++                                        "longer following that handle\n"
++                                        "(Their account may have been "
++                                        "suspended or restricted / made "
++                                        "unavailable, their Tweets may be "
++                                        "private/protected now, or they "
++                                        "may have changed their "
++                                        "handle/username or deactived "
++                                        "their account)"
+                                     )
+-                                    for record in deleted:
+-                                        notice = (
+-                                            f"`{record['handle']}` doesn't "
+-                                            "appear to be a valid Twitter "
+-                                            "user at "
+-                                            f"https://twitter.com/{record['handle']} "
+-                                            "anymore, so "
+-                                            f"<#{record['channel_id']}> is no "
+-                                            "longer following that handle\n"
+-                                            "(Their account may have been "
+-                                            "suspended or restricted / made "
+-                                            "unavailable, their Tweets may be "
+-                                            "private/protected now, or they "
+-                                            "may have changed their "
+-                                            "handle/username or deactived "
+-                                            "their account)"
+-                                        )
+-                                        self.bot.print(notice)
+-                                        try:
+-                                            channel = (
+-                                                self.bot.get_channel(
++                                    self.bot.print(notice)
++                                    try:
++                                        channel = (
++                                            self.bot.get_channel(
++                                                record["channel_id"]
++                                            ) or (
++                                                await self.bot.fetch_channel(
+                                                     record["channel_id"]
+-                                                ) or (
+-                                                    await self.bot.fetch_channel(
+-                                                        record["channel_id"]
+-                                                    )
+                                                 )
+                                             )
+-                                            await channel.send(notice)
+-                                        except (
+-                                            discord.Forbidden, discord.NotFound
+-                                        ):
+-                                            await self.bot.last_resort_notices_channel.send(
+-                                                notice
+-                                            )
+-                                    continue
+-                        case 500 | 502 | 503 | 504 | 520 | 521 | 522 | 524 | 530:
+-                            # TODO: Log
+-                            await asyncio.sleep(1)
+-                            continue
+-                        case _:
+-                            self.bot.print(
+-                                f"Twitter feed returned {resp.status} "
+-                                f"status with handle, {handle}, and "
+-                                f"Nitter instance, {nitter_instance_url}"
+-                            )
+-                            continue
++                                        )
++                                        await channel.send(notice)
++                                    except (
++                                        discord.Forbidden, discord.NotFound
++                                    ):
++                                        await self.bot.last_resort_notices_channel.send(
++                                            notice
++                                        )
++                                continue
++                    elif resp.status == 500 or resp.status == 502 or resp.status == 503 or resp.status == 504 or resp.status == 520 or resp.status == 521 or resp.status == 522 or resp.status == 524 or resp.status == 530:
++                        # TODO: Log
++                        await asyncio.sleep(1)
++                        continue
++                    else:
++                        self.bot.print(
++                            f"Twitter feed returned {resp.status} "
++                            f"status with handle, {handle}, and "
++                            f"Nitter instance, {nitter_instance_url}"
++                        )
++                        continue
+ 
+                 feed_info = await self.bot.loop.run_in_executor(
+                     None,
+diff --git a/cassettes/quotes/get_random_quote/get_random_quote.yaml b/cassettes/quotes/get_random_quote/get_random_quote.yaml
+index ea396e0f..a1b49cfc 100644
+--- a/cassettes/quotes/get_random_quote/get_random_quote.yaml
++++ b/cassettes/quotes/get_random_quote/get_random_quote.yaml
+@@ -1790,4 +1790,157 @@ interactions:
+     status:
+       code: 200
+       message: OK
++- request:
++    body: null
++    headers: {}
++    method: GET
++    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
++  response:
++    body:
++      string: '{"quoteText":"The smallest flower is a thought, a life answering to
++        some feature of the Great Whole, of whom they have a persistent intuition.
++        ", "quoteAuthor":"Honore De Balzac", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/57bd4bac51/"}'
++    headers:
++      CF-Cache-Status:
++      - DYNAMIC
++      CF-RAY:
++      - 8cbe299dea572b7e-LAX
++      Connection:
++      - keep-alive
++      Content-Encoding:
++      - gzip
++      Content-Type:
++      - application/json
++      Date:
++      - Tue, 01 Oct 2024 17:27:17 GMT
++      NEL:
++      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
++      Report-To:
++      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=se3jsnY%2F6OxAbKpah3mGSHDVywPlDDMRhgMNZO5QuOOvLMEEO7i%2B2mqaORsMkxUuhVncTeFYX2fgbnCfsROIGLnHMq223Nw8EKPzXcyKbPLkHSa8zuHarQLV1F70Ozm0obrGjuo%3D"}],"group":"cf-nel","max_age":604800}'
++      Server:
++      - cloudflare
++      Transfer-Encoding:
++      - chunked
++      Vary:
++      - Accept-Encoding
++      X-Content-Type-Options:
++      - nosniff
++    status:
++      code: 200
++      message: OK
++- request:
++    body: null
++    headers: {}
++    method: GET
++    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
++  response:
++    body:
++      string: '{"quoteText":"Every great advance in science has issued from a new
++        audacity of the imagination.  ", "quoteAuthor":"John Dewey", "senderName":"",
++        "senderLink":"", "quoteLink":"http://forismatic.com/en/f1bcc8810a/"}'
++    headers:
++      CF-Cache-Status:
++      - DYNAMIC
++      CF-RAY:
++      - 8cbe2adbda82cbaf-LAX
++      Connection:
++      - keep-alive
++      Content-Encoding:
++      - gzip
++      Content-Type:
++      - application/json
++      Date:
++      - Tue, 01 Oct 2024 17:28:08 GMT
++      NEL:
++      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
++      Report-To:
++      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=FWvPQw6Jr9Ab4qY2QwKL9ejJkIShaCP7B4HC%2B0oKw%2B4SPej%2FzO%2FMGzf3JWxSWNIyexqxiQP5kEzQRrwqvr%2FK2QlWoeZH%2F5xJM0WvEM0czy9BfW47XkTIk6CZ0w5fk3Q6PqO3Kbg%3D"}],"group":"cf-nel","max_age":604800}'
++      Server:
++      - cloudflare
++      Transfer-Encoding:
++      - chunked
++      Vary:
++      - Accept-Encoding
++      X-Content-Type-Options:
++      - nosniff
++    status:
++      code: 200
++      message: OK
++- request:
++    body: null
++    headers: {}
++    method: GET
++    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
++  response:
++    body:
++      string: '{"quoteText":"To be what we are, and to become what we are capable
++        of becoming, is the only end of life.  ", "quoteAuthor":"Robert Stevenson",
++        "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/ab5cc88a65/"}'
++    headers:
++      CF-Cache-Status:
++      - DYNAMIC
++      CF-RAY:
++      - 8cbf85106e257e8e-LAX
++      Connection:
++      - keep-alive
++      Content-Encoding:
++      - gzip
++      Content-Type:
++      - application/json
++      Date:
++      - Tue, 01 Oct 2024 21:24:29 GMT
++      NEL:
++      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
++      Report-To:
++      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=cC25qAt%2BDUZJiBYUAfLdTlIOK22FGn7hJ0q99MDSInCaCgvdzFdn2UDkkX8cmDh3djT1Fgb0MY20U2uestsbiy89ditdisPRoEhfD6D4oMdpaSrtOyaKKu4nflAYqtsArqw1aUg%3D"}],"group":"cf-nel","max_age":604800}'
++      Server:
++      - cloudflare
++      Transfer-Encoding:
++      - chunked
++      Vary:
++      - Accept-Encoding
++      X-Content-Type-Options:
++      - nosniff
++    status:
++      code: 200
++      message: OK
++- request:
++    body: null
++    headers: {}
++    method: GET
++    uri: http://api.forismatic.com/api/1.0/?format=json&lang=en&method=getQuote
++  response:
++    body:
++      string: '{"quoteText":"Decision is a risk rooted in the courage of being free.
++        ", "quoteAuthor":"Paul Tillich", "senderName":"", "senderLink":"", "quoteLink":"http://forismatic.com/en/f824c0f67b/"}'
++    headers:
++      CF-RAY:
++      - 8d31ea1389540cd7-LAX
++      Connection:
++      - keep-alive
++      Content-Encoding:
++      - gzip
++      Content-Type:
++      - application/json
++      Date:
++      - Tue, 15 Oct 2024 18:36:23 GMT
++      NEL:
++      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
++      Report-To:
++      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=Fcq95XftJ3dJQcQuUFzr%2B2zoD21l97qtg%2BQTsTE799vki9Yw1QN9xcEn2XQ7YkxrxYMGMSM468Hn3sfW%2Bz9Sv%2Fl9k3zjh4wPiry2N9CnQRPc0JNUEdY0%2BPkjMILDAbgFnfi8ESM%3D"}],"group":"cf-nel","max_age":604800}'
++      Server:
++      - cloudflare
++      Transfer-Encoding:
++      - chunked
++      Vary:
++      - Accept-Encoding
++      X-Content-Type-Options:
++      - nosniff
++      alt-svc:
++      - h3=":443"; ma=86400
++      cf-cache-status:
++      - DYNAMIC
++    status:
++      code: 200
++      message: OK
+ version: 1
+diff --git a/units/battle_net/authentication.py b/units/battle_net/authentication.py
+index d8096621..76ec9f5b 100644
+--- a/units/battle_net/authentication.py
++++ b/units/battle_net/authentication.py
+@@ -23,15 +23,13 @@ async def request_access_token(
+     if BATTLE_NET_CLIENT_ID is None or BATTLE_NET_CLIENT_SECRET is None:
+         raise RuntimeError("Missing Battle.net API credentials")
+ 
+-    async with (
+-        ensure_session(aiohttp_session) as aiohttp_session,
+-        aiohttp_session.post(
++    async with ensure_session(aiohttp_session) as aiohttp_session:
++        async with aiohttp_session.post(
+             "https://oauth.battle.net/token",
+             auth = aiohttp.BasicAuth(
+                 BATTLE_NET_CLIENT_ID, BATTLE_NET_CLIENT_SECRET
+             ),
+             data = {"grant_type": "client_credentials"}
+-        ) as resp
+-    ):
+-        return (await resp.json())["access_token"]
++        ) as resp:
++            return (await resp.json())["access_token"]
+ 
+diff --git a/units/bitcoin.py b/units/bitcoin.py
+index 2335f210..9187c7db 100644
+--- a/units/bitcoin.py
++++ b/units/bitcoin.py
+@@ -28,13 +28,11 @@ class Currency(BaseModel):
+ async def get_supported_currencies(
+     *, aiohttp_session: aiohttp.ClientSession | None = None
+ ) -> list[Currency]:
+-    async with (
+-        ensure_session(aiohttp_session) as aiohttp_session,
+-        aiohttp_session.get(
++    async with ensure_session(aiohttp_session) as aiohttp_session:
++        async with aiohttp_session.get(
+             "https://api.coindesk.com/v1/bpi/supported-currencies.json"
+-        ) as resp
+-    ):
+-        data = await resp.json(content_type = "text/html")
++        ) as resp:
++            data = await resp.json(content_type = "text/html")
+ 
+     return [Currency.model_validate(currency) for currency in data]
+ 
+diff --git a/units/genshin_impact/characters.py b/units/genshin_impact/characters.py
+index 36464823..8ee7b2fd 100644
+--- a/units/genshin_impact/characters.py
++++ b/units/genshin_impact/characters.py
+@@ -64,11 +64,9 @@ class Constellation(BaseModel):
+ async def get_all_characters(
+     *, aiohttp_session: aiohttp.ClientSession | None = None
+ ) -> list[Character]:
+-    async with (
+-        ensure_session(aiohttp_session) as aiohttp_session,
+-        aiohttp_session.get(f"{API_BASE_URL}/characters/all") as resp
+-    ):
+-        data = await resp.json()
++    async with ensure_session(aiohttp_session) as aiohttp_session:
++        async with aiohttp_session.get(f"{API_BASE_URL}/characters/all") as resp:
++            data = await resp.json()
+ 
+     try:
+         return [Character.model_validate(character) for character in data]
+@@ -80,16 +78,14 @@ async def get_all_characters(
+ async def get_character(
+     name: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+ ) -> Character:
+-    async with (
+-        ensure_session(aiohttp_session) as aiohttp_session,
+-        aiohttp_session.get(
++    async with ensure_session(aiohttp_session) as aiohttp_session:
++        async with aiohttp_session.get(
+             f"{API_BASE_URL}/characters/{name.lower().replace(' ', '-')}"
+-        ) as resp
+-    ):
+-        if resp.status == 404:
+-            raise ValueError("Character not found")
++        ) as resp:
++            if resp.status == 404:
++                raise ValueError("Character not found")
+ 
+-        data = await resp.json()
++            data = await resp.json()
+ 
+     try:
+         return Character.model_validate(data)
+@@ -101,22 +97,18 @@ async def get_character(
+ async def get_character_images(
+     name: str, *, aiohttp_session: aiohttp.ClientSession | None = None
+ ) -> list[str]:
+-    async with (
+-        ensure_session(aiohttp_session) as aiohttp_session,
+-        aiohttp_session.get(
++    async with ensure_session(aiohttp_session) as aiohttp_session:
++        async with aiohttp_session.get(
+             f"{API_BASE_URL}/characters/{name.lower().replace(' ', '-')}/list"
+-        ) as resp
+-    ):
+-        return await resp.json()
++        ) as resp:
++            return await resp.json()
+ 
+ 
+ @async_cache(ignore_kwargs = "aiohttp_session")
+ async def get_characters(
+     *, aiohttp_session: aiohttp.ClientSession | None = None
+ ) -> list[str]:
+-    async with (
+-        ensure_session(aiohttp_session) as aiohttp_session,
+-        aiohttp_session.get(f"{API_BASE_URL}/characters") as resp
+-    ):
+-        return await resp.json()
++    async with ensure_session(aiohttp_session) as aiohttp_session:
++        async with aiohttp_session.get(f"{API_BASE_URL}/characters") as resp:
++            return await resp.json()
+ 
+diff --git a/units/nitter.py b/units/nitter.py
+index 6eeacd1f..bb15508b 100644
+--- a/units/nitter.py
++++ b/units/nitter.py
+@@ -23,11 +23,9 @@ async def get_healthy_rss_instances(
+     exclude: list[str] | tuple[str, ...] = ()
+ ) -> list[dict]:
+     # TODO: Add User-Agent
+-    async with (
+-        ensure_session(aiohttp_session) as aiohttp_session,
+-        aiohttp_session.get("https://status.d420.de/api/v1/instances") as resp
+-    ):
+-        data = await resp.json()
++    async with ensure_session(aiohttp_session) as aiohttp_session:
++        async with aiohttp_session.get("https://status.d420.de/api/v1/instances") as resp:
++            data = await resp.json()
+ 
+     return [
+         instance

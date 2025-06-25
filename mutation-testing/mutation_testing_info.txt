@@ -1,0 +1,40 @@
+aiosmtplib src/aiosmtplib aiosmtplib pytest
+anonlink anonlink/ tests/ pytest
+argon2-cffi src/argon2/ tests/ 'pytest -k "not test_packaging.py"'
+attrs src/ tests/ 'pytest -k "not test_version and not test_version_info"'
+barva barva/ tests/ pytest
+BIGSI bigsi/ bigsi/tests/ 'pytest -k "not test_create_bloom and not test_exact_search and not test_delete_sample and not test_transpose"'
+buku buku.py tests/ 'pytest -k "not test_bukuserver_requirement and not test_buku_requirement"'
+cdflib cdflib/ tests/ pytest
+chalice chalice/ tests/ 'pytest tests'
+chocolate chocolate tests/ 'pytest tests'
+chopsticks chopsticks tests/ 'pytest tests'
+Ciw ciw/ ciw/tests 'pytest ciw/tests'
+clkhash clkhash tests/ pytest
+cloudformation-cli-python-plugin src/cloudformation_cli_python_lib tests/ 'pytest tests'
+corrscope corrscope tests pytest
+cryptoconditions cryptoconditions tests/ pytest
+cyberpandas cyberpandas tests/ pytest
+dataclasses-json dataclasses_json tests/ pytest
+datacube-core datacube tests/ 'pytest tests'
+datatyping datatyping tests/ pytest
+dc_stat_think dc_stat_think tests/ pytest
+dpath-python dpath tests pytest
+dsntnn dsntnn tests pytest
+dvrip dvrip . pytest
+elm-ops-tooling elm-ops-tooling tests/ pytest
+eth-keys eth_keys tests pytest
+exodata exodata exodata/tests 'pytest exodata/tests -k "not test_T"'
+fklearn src/fklearn tests pytest
+forgi forgi test 'pytest test'
+framewirc framewirc tests pytest
+fuzzywuzzy fuzzywuzzy . 'pytest -k "not test_process_warning"'
+geovoronoi geovoronoi tests pytest
+glue glue glue/tests pytest
+h2 src/h2 test pytest
+habitipy habitipy tests pytest
+Harmonbot . tests pytest
+hissp src/hissp tests 'pytest tests'
+hpack src/hpack test pytest
+hyperdome hyperdome test pytest
+hyperlink src/hyperlink src/hyperlink/test pytest

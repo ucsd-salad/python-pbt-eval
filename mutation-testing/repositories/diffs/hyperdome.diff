@@ -1,0 +1,113 @@
+diff --git a/hyperdome/common/schemas.py b/hyperdome/common/schemas.py
+index 5d6fd40..1a57c97 100644
+--- a/hyperdome/common/schemas.py
++++ b/hyperdome/common/schemas.py
+@@ -40,40 +40,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ # 	- sequence number included as authenticated data
+ 
+ from enum import StrEnum, auto
+-from pydantic import BaseModel, Field, Required, ConstrainedBytes
++from pydantic import BaseModel, Field # Required, ConstrainedBytes
++from typing import Annotated
+ 
++PubKeyBytes = Annotated[bytes, Field(min_length=32, max_length=32)]
++# class PubKeyBytes(ConstrainedBytes):
++#     min_length = 32
++#     max_length = 32
+ 
+-class PubKeyBytes(ConstrainedBytes):
+-    min_length = 32
+-    max_length = 32
++SignatureBytes = Annotated[bytes, Field(min_length=64, max_length=64)]
++# class SignatureBytes(ConstrainedBytes):
++#     min_length = 64
++#     max_length = 64
+ 
+-
+-class SignatureBytes(ConstrainedBytes):
+-    min_length = 64
+-    max_length = 64
+-
+-
+-class NonceBytes(ConstrainedBytes):
+-    min_length = 12
+-    max_length = 12
++NonceBytes = Annotated[bytes, Field(min_length=12, max_length=12)]
++# class NonceBytes(ConstrainedBytes):
++#     min_length = 12
++#     max_length = 12
+ 
+ 
+ class NewPreKeyBundle(BaseModel):
+-    signed_pre_key: PubKeyBytes = Required
+-    pre_key_signature: SignatureBytes = Required
+-    one_time_keys: list[PubKeyBytes] = Required
+-    one_time_keys_signature: SignatureBytes = Required
++    signed_pre_key: PubKeyBytes
++    pre_key_signature: SignatureBytes
++    one_time_keys: list[PubKeyBytes] 
++    one_time_keys_signature: SignatureBytes 
+ 
+ 
+ class KeyExchangeBundle(BaseModel):
+-    pub_signing_key: PubKeyBytes = Required
+-    signed_pre_key: PubKeyBytes = Required
+-    pre_key_signature: SignatureBytes = Required
+-    one_time_key: PubKeyBytes = Required
++    pub_signing_key: PubKeyBytes 
++    signed_pre_key: PubKeyBytes 
++    pre_key_signature: SignatureBytes 
++    one_time_key: PubKeyBytes 
+ 
+ 
+ class CounselorKeys(BaseModel):
+-    pub_signing_key: PubKeyBytes = Required
++    pub_signing_key: PubKeyBytes 
+     signed_pre_key: PubKeyBytes = Field(b"\x00" * 32)
+     pre_key_signature: SignatureBytes = Field(b"\x00" * 64)
+     one_time_keys: list[PubKeyBytes] = Field(
+@@ -82,9 +83,9 @@ class CounselorKeys(BaseModel):
+ 
+ 
+ class CounselorSignup(BaseModel):
+-    pub_signing_key: PubKeyBytes = Required
+-    signed_registration_code: PubKeyBytes = Required
+-    registration_code_signature: SignatureBytes = Required
++    pub_signing_key: PubKeyBytes 
++    signed_registration_code: PubKeyBytes 
++    registration_code_signature: SignatureBytes 
+ 
+ 
+ class ChatContentType(StrEnum):
+@@ -94,8 +95,8 @@ class ChatContentType(StrEnum):
+ 
+ 
+ class IntroductionMessage(BaseModel):
+-    ephemeral_key: PubKeyBytes = Required
+-    one_time_key: PubKeyBytes = Required
++    ephemeral_key: PubKeyBytes 
++    one_time_key: PubKeyBytes 
+ 
+ 
+ class EncryptionScheme(BaseModel):
+@@ -109,9 +110,9 @@ DEFAULT_ENCRYPTION_SCHEME = EncryptionScheme()
+ 
+ 
+ class EncryptedMessage(BaseModel):
+-    sequence: int = Required
+-    nonce: NonceBytes = Required
+-    ciphertext: bytes = Required
++    sequence: int 
++    nonce: NonceBytes 
++    ciphertext: bytes 
+     associated_data: bytes | None = None
+     encryption: EncryptionScheme = DEFAULT_ENCRYPTION_SCHEME
+ 
+@@ -125,5 +126,5 @@ class StatusMessage(BaseModel):
+ 
+ 
+ class ChatContent(BaseModel):
+-    _type: ChatContentType = Required
+-    content: IntroductionMessage | EncryptedMessage | StatusMessage = Required
++    _type: ChatContentType 
++    content: IntroductionMessage | EncryptedMessage | StatusMessage 

@@ -1,0 +1,60 @@
+diff --git a/elm_deps_sync.py b/elm_deps_sync.py
+old mode 100755
+new mode 100644
+diff --git a/find_coffee_requirements.py b/find_coffee_requirements.py
+old mode 100755
+new mode 100644
+diff --git a/native_deps_sync.py b/native_deps_sync.py
+old mode 100755
+new mode 100644
+diff --git a/tests/test_elm_deps_sync.py b/tests/test_elm_deps_sync.py
+index 1e4a83d..9509124 100644
+--- a/tests/test_elm_deps_sync.py
++++ b/tests/test_elm_deps_sync.py
+@@ -3,7 +3,7 @@ import json
+ import difflib
+ 
+ import pytest
+-from hypothesis import given
++from hypothesis import given, settings, HealthCheck
+ import hypothesis.strategies as st
+ 
+ import elm_deps_sync
+@@ -34,10 +34,10 @@ spec_deps = [
+     ('NoRedInk/spec-2', '1.0.0 <= v <= 1.0.0'),
+ ]
+ 
+-
+-@given(top_level_keys=st.permutations(package_skeleton.keys()),
++@settings(suppress_health_check=(HealthCheck.function_scoped_fixture,))
++@given(top_level_keys=st.permutations(list(package_skeleton.keys())),
+        top_level_deps=st.permutations(top_level_deps),
+-       spec_keys=st.permutations(package_skeleton.keys()),
++       spec_keys=st.permutations(list(package_skeleton.keys())),
+        spec_deps=st.permutations(spec_deps))
+ def test_spec_order_is_preserved(
+         tmpdir,
+diff --git a/tests/test_native_deps_sync.py b/tests/test_native_deps_sync.py
+index 9c97235..50a0205 100644
+--- a/tests/test_native_deps_sync.py
++++ b/tests/test_native_deps_sync.py
+@@ -1,7 +1,7 @@
+ from collections import OrderedDict
+ import json
+ 
+-from hypothesis import given
++from hypothesis import given, settings, HealthCheck
+ import hypothesis.strategies as st
+ 
+ import native_deps_sync
+@@ -23,6 +23,7 @@ spec_deps = [
+ 
+ @given(top_level_deps=st.permutations(top_level_deps),
+        spec_deps=st.permutations(spec_deps))
++@settings(suppress_health_check=(HealthCheck.function_scoped_fixture,))
+ def test_spec_order_is_preserved(
+         tmpdir,
+         top_level_deps,
+diff --git a/update_elm_package.py b/update_elm_package.py
+old mode 100755
+new mode 100644
