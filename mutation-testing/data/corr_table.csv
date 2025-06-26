@@ -1,0 +1,13 @@
+ ,Roundtrip,Partial Roundtrip,Commutative,Constant Equality,Generated-Expression Bounds Checking,Constant Bounds Checking,Generated-Expression Non-Equality,Constant Non-Equality,Typechecking,Inclusion,Constant Inclusion,Exception Raising'
+Roundtrip,1.0,0.33,0.11,0.01,0.03,0.07,0.05,0.06,0.05,0.04,0.07,0.03
+Partial Roundtrip,0.33,1.0,0.03,0.0,0.05,0.05,0.12,0.0,0.01,0.04,0.05,0.02
+Commutative,0.11,0.03,1.0,0.08,0.01,0.04,0.0,0.01,0.2,0.01,0.06,0.04
+Constant Equality,0.01,0.0,0.08,1.0,0.01,0.12,0.05,0.02,0.28,0.04,0.12,0.04
+Generated-Expression Bounds Checking,0.03,0.05,0.01,0.01,1.0,0.09,0.12,0.03,0.16,0.02,0.02,0.02
+Constant Bounds Checking,0.07,0.05,0.04,0.12,0.09,1.0,0.03,0.01,0.12,0.0,0.63,0.02
+Generated-Expression Non-Equality,0.05,0.12,0.0,0.05,0.12,0.03,1.0,0.02,0.02,0.01,0.03,0.01
+Constant Non-Equality,0.06,0.0,0.01,0.02,0.03,0.01,0.02,1.0,0.03,0.02,0.01,0.01
+Typechecking,0.05,0.01,0.2,0.28,0.16,0.12,0.02,0.03,1.0,0.02,0.06,0.01
+Inclusion,0.04,0.04,0.01,0.04,0.02,0.0,0.01,0.02,0.02,1.0,0.02,0.01
+Constant Inclusion,0.07,0.05,0.06,0.12,0.02,0.63,0.03,0.01,0.06,0.02,1.0,0.02
+Exception Raising,0.03,0.02,0.04,0.04,0.02,0.02,0.01,0.01,0.01,0.01,0.02,1.0

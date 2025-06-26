@@ -8,8 +8,10 @@ Changes were made to the repositories (as seen in the diffs) to accomodate featu
 
 ## Mutation Testing
 To run the mutation tests, run `run_mutation_testing.sh`. This will print the output of each mutation test to stdout. If you do not wish to test all 100 mutations, then `choose-subset-size` can be changed to something smaller (such as 10). Mutation testing is computationally intensive, and running 100 mutations for one project can take 1-5 hours depending on the repository. Note: the mutations are randomly selected from all the possible mutations that can be made to a project. To run fewer projects, truncate the list of repositories in `mutation_testing_info.txt`. 
-If there is a `pyproject.toml` file in the tested repository, then remove it as poetry will not work with 
-
 
 ## Parameter Sweep
-To run the parameter sweep experiment, remove `hypothesis` as a dependency, and instead install the new version of Hypothesis through `poetry add ./hypothesis`. This will force Hypothesis to use 500 inputs to each test (when possible). Then, rerun the mutation testing following the steps above.  
+To run the parameter sweep experiment, remove `hypothesis` as a dependency, and instead install the local version of Hypothesis through `poetry add ./hypothesis`. This will force Hypothesis to use 500 inputs to each test (when possible). Then, rerun the mutation testing following the steps above. This version of Hypothesis also reports timing data for each test (for which we also include our original data). 
+
+## Statistics
+The Chi-square and logistic regression statistics were found using the software JMP, for which there is a [free trial](linktotrial). We have included the CSV that was uploaded into JMP (`data/results_w_cov_test.csv`). The figures in the paper can be recreated by running the Jupyter notebooks in the `analysis` folder. 
+

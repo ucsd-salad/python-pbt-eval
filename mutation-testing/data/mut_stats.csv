@@ -1,0 +1,13 @@
+category,odds_ratio
+Roundtrip,13.01922
+Partial Roundtrip,13.55082
+Commutative Paths,14.60384
+Const. Equality,10.34055
+G.E. Bounds Checking,0
+Const. Bounds Checking,12.46172
+G.E. Non-Equality,0
+Const. Non-Equality,6.119367
+Typechecking,19.44359
+Inclusion,36.42177
+Const. Inclusion,1.141855
+Exception,112.7588
