@@ -1,0 +1,9 @@
+mutation_number,failing_functions
+0,"['tests/test_macros.py::TestMacros::test_prelude']"
+1,"['tests/test_macros.py::TestMacros::test_progn']"
+2,"['tests/test_munger.py::TestMunger::test_munge_basic', 'tests/test_reader.py::TestReader::test_examples']"
+3,"['tests/test_macros.py::TestMacros::test_doc', 'tests/test_macros.py::TestMacros::test_expand_none', 'tests/test_macros.py::TestMacros::test_none_doc', 'tests/test_macros.py::TestMacros::test_qualified_symbol', 'tests/test_macros.py::TestMacros::test_qualified_symbol2']"
+4,"['tests/test_macros.py::TestMacros::test_unless']"
+5,"['tests/test_munger.py::TestMunger::test_munge_basic', 'tests/test_reader.py::TestReader::test_examples']"
+6,"['tests/test_compiler.py::TestCompileGeneral::test_post_compile_warn']"
+7,"['tests/test_compiler.py::TestCompileGeneral::test_compile_literal', 'tests/test_compiler.py::TestCompileGeneral::test_post_compile_warn', 'tests/test_macros.py::TestMacros::test_string_reader_macro']"

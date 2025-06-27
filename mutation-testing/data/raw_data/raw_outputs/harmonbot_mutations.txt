@@ -1,0 +1,3 @@
+mutation_number,failing_functions
+0,"['tests/test_cryptography.py::TestCaesarCipher::test_decode_inverts_encode']"
+1,"['tests/test_trivia.py::TestCheckAnswer::test_clue_text_plural_subject_redundancy_in_answer', 'tests/test_trivia.py::TestCheckAnswer::test_clue_text_subject_redundancy_in_answer', 'tests/test_trivia.py::TestCheckAnswer::test_clue_text_subject_redundancy_in_response', 'tests/test_trivia.py::TestCheckAnswer::test_clue_text_subject_redundancy_in_response_with_preceding_word']"

@@ -1,0 +1,12 @@
+mutation_number,failing_functions
+0,"['corrscope/tests/test_output.py::test_render_subfps_one', 'corrscope/tests/test_output.py::test_preview_performance']"
+1,"['corrscope/tests/test_cli.py::test_no_files']"
+2,"['corrscope/tests/test_output.py::test_render_subfps_one', 'corrscope/tests/test_output.py::test_preview_performance']"
+3,"['corrscope/tests/test_wave.py::test_calc_flatten_matrix', 'corrscope/tests/test_wave.py::test_stereo_flatten_modes']"
+4,"['corrscope/tests/test_cli.py::test_file_dirs']"
+5,"['corrscope/tests/test_windows.py::test_midpad']"
+6,"['corrscope/tests/test_cli.py::test_load_yaml_another_dir', 'corrscope/tests/test_output.py::test_corr_output_without_audio', 'corrscope/tests/test_output.py::test_render_subfps_non_integer', 'corrscope/tests/test_output.py::test_record_performance']"
+7,"['corrscope/tests/test_cli.py::test_load_yaml_another_dir', 'corrscope/tests/test_output.py::test_corr_terminate_ffplay', 'corrscope/tests/test_output.py::test_corr_terminate_works']"
+8,"['corrscope/tests/test_renderer.py::test_label_render']"
+9,"['corrscope/tests/test_layout.py::test_edges', 'corrscope/tests/test_layout.py::test_stereo_layout', 'corrscope/tests/test_renderer.py::test_default_colors']"
+10,"['corrscope/tests/test_cli.py::test_file_dirs']"

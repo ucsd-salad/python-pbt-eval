@@ -1,0 +1,4 @@
+mutation_number,failing_functions
+0,"['barva/tests/utils/test_color.py::test_from_hex']"
+1,"['barva/tests/utils/test_color.py::test_to_hex_within_000000_FFFFFF']"
+2,"['barva/tests/utils/test_color.py::test_from_hex']"
