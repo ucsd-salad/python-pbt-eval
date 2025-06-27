@@ -13,5 +13,5 @@ To run the mutation tests, run `run_mutation_testing.sh`. This will print the ou
 To run the parameter sweep experiment, remove `hypothesis` as a dependency, and instead install the local version of Hypothesis through `poetry add ./hypothesis`. This will force Hypothesis to use 500 inputs to each test (when possible). Then, rerun the mutation testing following the steps above. This version of Hypothesis also reports timing data for each test (for which we also include our original data). 
 
 ## Statistics
-The Chi-square and logistic regression statistics were found using the software JMP, for which there is a [free trial](linktotrial). We have included the CSV that was uploaded into JMP (`data/results_w_cov_test.csv`). The figures in the paper can be recreated by running the Jupyter notebooks in the `analysis` folder. 
+The Chi-square and logistic regression statistics were found using the software JMP, for which there is a [free trial](linktotrial). We have included the CSV that was uploaded into JMP (`data/results_w_cov_test.csv`). The figures in the paper can be recreated by running the Jupyter notebook in the `pbt-classification/analysis` folder. 
 
