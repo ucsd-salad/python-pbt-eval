@@ -1,7 +1,6 @@
 #!/bin/bash
 
-REPO_LIST="repository_urls_truncated.txt"
-#TODO change back to untruncated version
+REPO_LIST="repository_urls.txt"
 
 if [[ ! -f "$REPO_LIST" ]]; then
     echo "File $REPO_LIST not found!"

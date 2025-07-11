@@ -19,8 +19,8 @@ We believe these claims can be supported by this artifact when using our origina
 There are no hardware dependencies for all parts of the project, except if one chooses to rerun the mutation testing. It is possible to run mutation testing on a few projects on a typical laptop (which will take a few hours), but in order to run the mutation tests for all projects, we recommend using a cluster with one machine per project. 
 
 ## Getting Started
-You will need a personal GitHub token (see instructions in `pbt-classification/README.md`). You will also need Python 3.12 and the Poetry dependency manager. 
-To recreate the figures for the paper, run `pbt-classification/analysis/figures.ipynb` and `rq1.py`. Before running these, unzip the file `mutation-testing/data/results_w_cov_test.csv.zip`. 
+You will need a personal GitHub token, Python 3.12, and the Poetry dependency manager (see instructions in `pbt-classification/README.md` for environment setup). 
+To recreate the figures for the paper, run `pbt-classification/analysis/figures.ipynb` as a Jupyter notebook and `poetry run python analysis/rq1.py` from the `pbt-classification` directory. Before running these, unzip the file `mutation-testing/data/results_w_cov_test.csv.zip`. 
 To rerun the categorization of tests, follow the instructions in `pbt-classification/README.md` to collect the repositories and run the categorization code. To see the final percentages, run `rq1.py` again, changing the inputs to the functions to your new data files. 
 
 ## Step-by-Step Instructions
