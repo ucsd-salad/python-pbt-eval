@@ -16,3 +16,18 @@ To run the parameter sweep experiment, remove `hypothesis` as a dependency, and 
 ## Statistics
 The Chi-square and logistic regression statistics were found using the software JMP, for which there is a [free trial](linktotrial). We have included the CSV that was uploaded into JMP (`data/results_w_cov_test.csv`). The figures in the paper can be recreated by running the Jupyter notebook in the `pbt-classification/analysis` folder. 
 
+
+## List of Contents
+The contents of this portion of the artifact broken down by directory. 
+
+- `data/`
+    - The data we obtained from running mutation tests. 
+- `hypothesis/`
+    - A submodule pointing to a fork of the Hypothesis library to accomodate the parameter sweep experiments.
+- `mutmut/`
+    - A submodule pointing to a fork of the Mutmut library to accomodate the experiments run. 
+- `repositories/`
+    - `diffs/`
+        - The collection of file diffs for the repositories tested. 
+    -  `download_repos.sh`
+        - A script to download all repositories tested and apply the corresponding dif files.

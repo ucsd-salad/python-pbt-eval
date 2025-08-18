@@ -4,7 +4,7 @@ As of June 23, 2025, the Boa site is down, so skip to the Data Cleanup step usin
 
 ## Using Boa
 
-Copy over the code from the `hypothesis_imports.boa` file to the tool and run it on the Github Python 2022 dataset. After the code is run, a job output file will be created. 
+Copy over the code from the `corpus-collection/hypothesis_imports.boa` file to the tool and run it on the Github Python 2022 dataset. After the code is run, a job output file will be created. 
 
 ## Data Cleanup
 
